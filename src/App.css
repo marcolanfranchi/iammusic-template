@@ -1,34 +1,47 @@
+/* Add a font import for "Art Dystopia" */
+@import url('https://fonts.googleapis.com/css2?family=Art+Dystopia&display=swap');
+
+/* Rest of your existing styles */
 .App {
+  background-color: white;
   text-align: center;
+  color: black;
+  height: 100vh;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Add styling for the title with "Art Dystopia" font */
+h2 {
+  font-family: 'Art Dystopia';
+  font-size: 2rem; /* Adjust the font size as needed */
+  margin-top: 40px;
+  margin-bottom: 40px; /* Add some spacing between title and input */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.square-container {
+  overflow: hidden;
+  margin: 20px auto;
+  padding: 10px;
+  background-color: white;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  color: black;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px;
+  cursor: pointer;
   color: white;
+  background-color: black;
 }
 
-.App-link {
-  color: #61dafb;
+/* Add spinning animation for the header */
+h1 {
+  animation: spin 2s linear infinite;
 }
 
-@keyframes App-logo-spin {
+@keyframes spin {
   from {
     transform: rotate(0deg);
   }
