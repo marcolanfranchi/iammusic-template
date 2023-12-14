@@ -61,8 +61,9 @@ function App() {
   return (
     <div className="App">
       <h1>  *  </h1>
-      <h2>I AM MUSIC COVER GENERATOR</h2>
+      <h2>I AM MUSIC TEMPLATE</h2>
       <input
+        maxLength={50}
         type="text"
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}
