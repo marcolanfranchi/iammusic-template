@@ -90,7 +90,7 @@ function App() {
             position: 'absolute',
             top: '50%',
             left: '50%',
-            transform: 'translate(-50.6%, -50%) scaleY(2.8) scaleX(1)',
+            transform: 'translate(-50.6%, -50%) scaleY(2.7) scaleX(1)',
             margin: '0',
             zIndex: 0,
           }}
@@ -104,7 +104,7 @@ function App() {
             fontSize: `${fontSize}px`,
             fontWeight: '825',
             whiteSpace: 'nowrap',
-            transform: 'scaleY(1) scaleX(1))',
+            transform: 'scaleY(0.7) scaleX(1))',
             margin: '0 10px',
             zIndex: 1,
           }}
