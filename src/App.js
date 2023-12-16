@@ -90,8 +90,8 @@ function App() {
             position: 'absolute',
             top: '50%',
             left: '50%',
-            transform: 'translate(-50.6%, -50%) scaleY(2.7) scaleX(1)',
-            margin: '0',
+            transform: 'translate(-53.75%, -51.75%) scaleY(2.7) scaleX(0.99)',
+            margin: '0 10px',
             zIndex: 0,
           }}
         >
@@ -102,9 +102,9 @@ function App() {
           style={{
             fontFamily: 'Swiss 911 Compressed Bold',
             fontSize: `${fontSize}px`,
-            fontWeight: '825',
+            fontWeight: '800',
             whiteSpace: 'nowrap',
-            transform: 'scaleY(0.7) scaleX(1))',
+            transform: 'scaleY(1) scaleX(1))',
             margin: '0 10px',
             zIndex: 1,
           }}
