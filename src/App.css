@@ -1,20 +1,8 @@
-/* Add a font import for "Art Dystopia" */
-@import url('https://fonts.googleapis.com/css2?family=Art+Dystopia&display=swap');
-
-/* Rest of your existing styles */
 .App {
   background-color: white;
   text-align: center;
   color: black;
   height: 100vh;
-}
-
-/* Add styling for the title with "Art Dystopia" font */
-h2 {
-  font-family: 'Art Dystopia';
-  font-size: 2rem; /* Adjust the font size as needed */
-  margin-top: 40px;
-  margin-bottom: 40px; /* Add some spacing between title and input */
 }
 
 .square-container {
@@ -36,9 +24,9 @@ button {
   background-color: black;
 }
 
-/* Add spinning animation for the header */
+/* spinning animation */
 h1 {
-  animation: spin 2s linear infinite;
+  animation: spin 2s alternate infinite;
 }
 
 @keyframes spin {

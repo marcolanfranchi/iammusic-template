@@ -1,15 +1,18 @@
+import { inject } from '@vercel/analytics';
 import React, { useState, useEffect } from 'react';
 import html2canvas from 'html2canvas';
-
 import './App.css';
+
+inject();
 
 function App() {
   const [inputText, setInputText] = useState('i am ***');
-  const [fontSize, setFontSize] = useState(60); // Increased font size for better quality
+  const [fontSize, setFontSize] = useState(60);
 
   const loadFonts = async () => {
     await document.fonts.load('12px "OptiSpire"');
     await document.fonts.load('12px "Swiss 911 Compressed Bold"');
+    await document.fonts.load('12px "Swiss 721 Black Extended"');
   };
 
   const generateImage = async () => {
@@ -36,7 +39,7 @@ function App() {
         const textElement = document.getElementById('text-element');
         const backgroundTextElement = document.getElementById('background-text-element');
 
-        let newFontSize = 60; // Increased starting font size
+        let newFontSize = 60;
         textElement.style.fontSize = `${newFontSize}px`;
         backgroundTextElement.style.fontSize = `${newFontSize}px`;
 
@@ -62,13 +65,6 @@ function App() {
     <div className="App">
       <h1>  *  </h1>
       <h2>I AM MUSIC TEMPLATE</h2>
-      <input
-        maxLength={50}
-        type="text"
-        value={inputText}
-        onChange={(e) => setInputText(e.target.value)}
-        placeholder="Enter text"
-      />
       <div
         id="image-container"
         className="square-container"
@@ -90,7 +86,7 @@ function App() {
             position: 'absolute',
             top: '50%',
             left: '50%',
-            transform: 'translate(-53.75%, -51.75%) scaleY(2.7) scaleX(0.99)',
+            transform: 'translate(-54%, -52%) scaleY(2.75) scaleX(1)',
             margin: '0 10px',
             zIndex: 0,
           }}
@@ -100,7 +96,7 @@ function App() {
         <p
           id="text-element"
           style={{
-            fontFamily: 'Swiss 911 Compressed Bold',
+            fontFamily: 'Swiss 721 Black Extended',
             fontSize: `${fontSize}px`,
             fontWeight: '800',
             whiteSpace: 'nowrap',
@@ -111,6 +107,15 @@ function App() {
         >
           {inputText.toUpperCase()}
         </p>
+      </div>
+      <div>
+      <input
+        maxLength={50}
+        type="text"
+        value={inputText}
+        onChange={(e) => setInputText(e.target.value)}
+        placeholder="Enter text"
+      />
       </div>
       <button onClick={generateImage}>Download Image</button>
     </div>
