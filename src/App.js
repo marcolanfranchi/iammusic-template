@@ -70,8 +70,8 @@ function App() {
         className="square-container"
         style={{
           position: 'relative',
-          width: '400px',
-          height: '400px',
+          width: '300x',
+          height: '300px',
         }}
       >
         <p
@@ -86,7 +86,7 @@ function App() {
             position: 'absolute',
             top: '50%',
             left: '50%',
-            transform: 'translate(-54%, -52%) scaleY(2.75) scaleX(1)',
+            transform: 'translate(-54%, -52%) scaleY(2.75) scaleX(0.99)',
             margin: '0 10px',
             zIndex: 0,
           }}
