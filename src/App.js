@@ -1,4 +1,5 @@
 import { inject } from '@vercel/analytics';
+import { SpeedInsights } from "@vercel/speed-insights/react"
 import React, { useState, useEffect } from 'react';
 import html2canvas from 'html2canvas';
 import './App.css';
@@ -6,17 +7,16 @@ import './App.css';
 inject();
 
 function App() {
-  const [inputText, setInputText] = useState('i am ***');
+  const [inputText, setInputText] = useState('try somethin😂');
   const [fontSize, setFontSize] = useState(60);
 
   const loadFonts = async () => {
     await document.fonts.load('12px "OptiSpire"');
-    await document.fonts.load('12px "Swiss 911 Compressed Bold"');
-    await document.fonts.load('12px "Swiss 721 Black Extended"');
   };
-
+  
   const generateImage = async () => {
     await loadFonts();
+
 
     const element = document.getElementById('image-container');
 
@@ -63,59 +63,40 @@ function App() {
 
   return (
     <div className="App">
-      <h1>  *  </h1>
-      <h2>I AM MUSIC TEMPLATE</h2>
+      <h1 className="spinning_dot"> * </h1>
+      <h2 className="App-title">I AM MUSIC TEMPLATE</h2>
       <div
         id="image-container"
         className="square-container"
         style={{
           position: 'relative',
-          width: '300x',
-          height: '300px',
+          width: '320x',
+          height: '320px',
         }}
       >
         <p
           id="background-text-element"
-          style={{
-            fontFamily: 'OptiSpire',
-            fontSize: `${fontSize}px`,
-            fontWeight: '300',
-            whiteSpace: 'nowrap',
-            color: 'black',
-            textAlign: 'center',
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-54%, -52%) scaleY(2.75) scaleX(0.99)',
-            margin: '0 10px',
-            zIndex: 0,
-          }}
+          className="background-text"
         >
-          {inputText.toUpperCase()}
+          {inputText.toUpperCase().replace(/ /g, '\u00A0\u00A0')}
         </p>
         <p
-          id="text-element"
-          style={{
-            fontFamily: 'Swiss 721 Black Extended',
-            fontSize: `${fontSize}px`,
-            fontWeight: '800',
-            whiteSpace: 'nowrap',
-            transform: 'scaleY(1) scaleX(1))',
-            margin: '0 10px',
-            zIndex: 1,
-          }}
-        >
-          {inputText.toUpperCase()}
-        </p>
+  id="text-element"
+  className="main-text"
+>
+{inputText.toUpperCase().replace(/ /g, '\u00A0\u00A0')}
+</p>
+
       </div>
       <div>
-      <input
-        maxLength={50}
-        type="text"
-        value={inputText}
-        onChange={(e) => setInputText(e.target.value)}
-        placeholder="Enter text"
-      />
+        <input
+          maxLength={50}
+          type="text"
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
+          placeholder="Enter text"
+        />
+        <SpeedInsights />
       </div>
       <button onClick={generateImage}>Download Image</button>
     </div>
