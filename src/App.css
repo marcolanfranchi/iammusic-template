@@ -5,6 +5,13 @@
   height: 100vh;
 }
 
+.bottom-text {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
+  font-size: small;
+}
+
 .App-title {
   color: black;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -17,7 +24,7 @@
 .square-container {
   /* overflow: hidden; */
   margin: 20px auto;
-  padding: 0px;
+  padding: 40px;
   background-color: white;
   display: flex;
   align-items: center;
@@ -35,7 +42,7 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -54%) scaleY(2.5) scaleX(0.825);
+  transform: translate(-50%, -54%) scaleY(2.5) scaleX(0.74);
   margin: 0 0px;
   z-index: 0;
 }
@@ -43,24 +50,29 @@
 .main-text {
   font-family: 'Swiss 911 Compressed Bold';
   font-size: 60px;
-  font-weight: 300;
+  font-weight: 100;
   white-space: pre;
-  transform: translate(0px, +4px) scaleY(0.9) scaleX(1.1);
+  transform: translate(0px, +4px) scaleY(0.9) scaleX(2);
   margin: 0px 10px;
-  z-index: 1;
+  /* z-index: 1; */
 }
 
-button {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-  sans-serif;
-  font-weight: 600;
-  font-size: small;
-  margin-top: 40px;
-  padding: 10px;
-  cursor: pointer;
-  color: white;
-  background-color:black;
+.text-input {
+  padding: 8px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 2px solid #1d1d1d;
+  border-radius: 2px;
+  background-color: #ffffff;
+  font-size: 16px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  width: 300px;
+}
+
+.text-input:focus {
+  border-color: #48525c;
+  box-shadow: 0 0 5px rgba(82, 98, 116, 0.5);
+  outline: none;
 }
 
 /* spinning animation */

@@ -1,35 +1,15 @@
 import { inject } from '@vercel/analytics';
 import { SpeedInsights } from "@vercel/speed-insights/react"
 import React, { useState, useEffect } from 'react';
-import html2canvas from 'html2canvas';
+import Draggable from 'react-draggable';
+
 import './App.css';
 
 inject();
 
 function App() {
-  const [inputText, setInputText] = useState('try somethin😂');
+  const [inputText, setInputText] = useState('type something');
   const [fontSize, setFontSize] = useState(60);
-
-  const loadFonts = async () => {
-    await document.fonts.load('12px "OptiSpire"');
-  };
-  
-  const generateImage = async () => {
-    await loadFonts();
-
-
-    const element = document.getElementById('image-container');
-
-    html2canvas(element, { scale: 2 }).then((canvas) => {
-      const dataURL = canvas.toDataURL();
-      const link = document.createElement('a');
-      link.href = dataURL;
-      link.download = inputText.replace(/ /g, '_') + '.png';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    });
-  };
 
   useEffect(() => {
     const calculateFontSize = () => {
@@ -39,8 +19,8 @@ function App() {
         const textElement = document.getElementById('text-element');
         const backgroundTextElement = document.getElementById('background-text-element');
 
-        let newFontSize = 60;
-        textElement.style.fontSize = `${newFontSize}px`;
+        let newFontSize = 50;
+        textElement.style.fontSize = `${newFontSize*1.0125}px`;
         backgroundTextElement.style.fontSize = `${newFontSize}px`;
 
         while (textElement.clientWidth > maxWidth) {
@@ -78,27 +58,33 @@ function App() {
           id="background-text-element"
           className="background-text"
         >
-          {inputText.toUpperCase().replace(/ /g, '\u00A0\u00A0')}
+          {inputText.toUpperCase() /* .replace(/ /g, '\u00A0\u00A0') */
+          }
         </p>
+        <Draggable>
         <p
-  id="text-element"
-  className="main-text"
->
-{inputText.toUpperCase().replace(/ /g, '\u00A0\u00A0')}
-</p>
-
+          id="text-element"
+          className="main-text"
+          >
+          {inputText.toUpperCase() /* .replace(/ /g, '\u00A0\u00A0') */
+          }
+          </p>
+          </Draggable>
       </div>
       <div>
         <input
-          maxLength={50}
+          className="text-input"
+          maxLength={25}
           type="text"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          placeholder="Enter text"
+          placeholder=""
         />
         <SpeedInsights />
       </div>
-      <button onClick={generateImage}>Download Image</button>
+      <p className="bottom-text">you can move the bold text around</p>
+      <p className="bottom-text">if it still looks bad, some words just work better than others</p>
+
     </div>
   );
 }
