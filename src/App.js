@@ -2,6 +2,8 @@ import { inject } from '@vercel/analytics';
 import { SpeedInsights } from "@vercel/speed-insights/react"
 import React, { useState, useEffect } from 'react';
 import Draggable from 'react-draggable';
+import { db } from './firebase'; // Import Firestore instance
+import { collection, addDoc, serverTimestamp } from "firebase/firestore"; // Import Firestore functions
 
 import './App.css';
 
@@ -41,6 +43,19 @@ function App() {
     };
   }, [inputText]);
 
+  const saveText = async () => {
+    try {
+      await addDoc(collection(db, "userSubmissions"), {
+        text: inputText,
+        timestamp: serverTimestamp()
+      });
+      alert("Text saved successfully!");
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      alert("Error saving text. Please try again.");
+    }
+  };
+
   return (
     <div className="App">
       <h1 className="spinning_dot"> * </h1>
@@ -50,7 +65,7 @@ function App() {
         className="square-container"
         style={{
           position: 'relative',
-          width: '320x',
+          width: '320px',
           height: '320px',
         }}
       >
@@ -58,18 +73,16 @@ function App() {
           id="background-text-element"
           className="background-text"
         >
-          {inputText.toUpperCase() /* .replace(/ /g, '\u00A0\u00A0') */
-          }
+          {inputText.toUpperCase()}
         </p>
         <Draggable>
-        <p
-          id="text-element"
-          className="main-text"
+          <p
+            id="text-element"
+            className="main-text"
           >
-          {inputText.toUpperCase() /* .replace(/ /g, '\u00A0\u00A0') */
-          }
+            {inputText.toUpperCase()}
           </p>
-          </Draggable>
+        </Draggable>
       </div>
       <div>
         <input
@@ -80,11 +93,11 @@ function App() {
           onChange={(e) => setInputText(e.target.value)}
           placeholder=""
         />
+        <button onClick={saveText} className="save-button">Save</button> {/* Save button */}
         <SpeedInsights />
       </div>
       <p className="bottom-text">you can move the bold text around</p>
       <p className="bottom-text">if it still looks bad, some words just work better than others</p>
-
     </div>
   );
 }
