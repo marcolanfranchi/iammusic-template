@@ -75,6 +75,19 @@
   outline: none;
 }
 
+.success-message {
+  color: green;
+  margin-left: 10px;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.success-message.show {
+  opacity: 1;
+}
+
+
 /* spinning animation */
 .spinning_dot {
   animation: spin 2s linear infinite;

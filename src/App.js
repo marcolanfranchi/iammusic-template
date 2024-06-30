@@ -12,6 +12,7 @@ inject();
 function App() {
   const [inputText, setInputText] = useState('type something');
   const [fontSize, setFontSize] = useState(60);
+  const [successMessage, setSuccessMessage] = useState(''); // State for success message
 
   useEffect(() => {
     const calculateFontSize = () => {
@@ -49,7 +50,8 @@ function App() {
         text: inputText,
         timestamp: serverTimestamp()
       });
-      alert("Text saved successfully!");
+      setSuccessMessage('Done'); // Set success message
+      setTimeout(() => setSuccessMessage(''), 3000); // Clear message after 3 seconds
     } catch (e) {
       console.error("Error adding document: ", e);
       alert("Error saving text. Please try again.");
@@ -93,7 +95,8 @@ function App() {
           onChange={(e) => setInputText(e.target.value)}
           placeholder=""
         />
-        <button onClick={saveText} className="save-button">Save</button> {/* Save button */}
+        <button onClick={saveText} className="save-button">Save</button>
+        <span className="success-message">{successMessage}</span> {/* Success message */}
         <SpeedInsights />
       </div>
       <p className="bottom-text">you can move the bold text around</p>
