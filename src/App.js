@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Draggable from 'react-draggable';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from './firebaseConfig';
+import html2canvas from 'html2canvas'; // Import html2canvas
 
 import './App.css';
 
@@ -12,11 +13,10 @@ inject();
 function App() {
   const [inputText, setInputText] = useState('type something');
   const [fontSize, setFontSize] = useState(60);
-  const [saveStatus, setSaveStatus] = useState('');
 
   useEffect(() => {
     const calculateFontSize = () => {
-      document.fonts.ready.then(() => {
+      document.fonts.ready.then(() => {    
         const container = document.getElementById('image-container');
         const maxWidth = container.clientWidth - 20;
         const textElement = document.getElementById('text-element');
@@ -50,13 +50,35 @@ function App() {
         text: inputText,
         timestamp: new Date()
       });
-      setSaveStatus('Text saved successfully!');
-      console.log('savedddddd')
+      console.log('Text saved successfully');
+
+      const imageContainer = document.getElementById('image-container');
+
+      html2canvas(imageContainer).then(canvas => {
+        canvas.toBlob(blob => {
+          const file = new File([blob], 'image.png', { type: 'image/png' });
+
+          // Check if the browser supports the Web Share API
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            navigator.share({
+              files: [file],
+              title: 'I AM MUSIC TEMPLATE',
+              text: 'Check out this image!'
+            })
+              .then(() => console.log('Share successful'))
+              .catch(error => console.error('Share failed', error));
+          } else {
+            // For desktop or unsupported mobile browsers, download the image
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = 'image.png';
+            link.click();
+          }
+        }, 'image/png');
+      });
 
     } catch (e) {
       console.error('Error adding document: ', e);
-      console.log('not saved :/')
-      setSaveStatus('Error saving text.');
     }
   };
 
@@ -97,8 +119,7 @@ function App() {
           onChange={(e) => setInputText(e.target.value)}
           placeholder=""
         />
-        <button className="save-button" onClick={handleSave}>Save</button>
-        <p className="save-status">{saveStatus}</p>
+        <button className="save-button" onClick={handleSave}>Save Image</button>
         <SpeedInsights />
       </div>
       <p className="bottom-text">you can move the bold text around</p>
