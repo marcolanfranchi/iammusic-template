@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react';
 import Draggable from 'react-draggable';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from './firebaseConfig';
-import html2canvas from 'html2canvas'; // Import html2canvas
+import html2canvas from 'html2canvas';
+import axios from 'axios';
 
 import './App.css';
 
@@ -13,6 +14,7 @@ inject();
 function App() {
   const [inputText, setInputText] = useState('type something');
   const [fontSize, setFontSize] = useState(60);
+  const [userData, setUserData] = useState({});
 
   useEffect(() => {
     const calculateFontSize = () => {
@@ -44,11 +46,35 @@ function App() {
     };
   }, [inputText]);
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // Access the API token from environment variables
+        const apiKey = process.env.REACT_APP_IPINFO_API_KEY;
+        const response = await axios.get(`https://ipinfo.io/json?token=${apiKey}`);
+        setUserData(response.data);
+      } catch (error) {
+        console.error('Error fetching user data: ', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   const handleSave = async () => {
     try {
+      const os = navigator.platform;
+      const { ip, country, region, city, loc } = userData;
+
       await addDoc(collection(db, 'texts'), {
+        timestamp: new Date(),
         text: inputText,
-        timestamp: new Date()
+        ip,
+        country,
+        region,
+        city,
+        location: loc,
+        os,
       });
       console.log('Text saved successfully');
 
@@ -58,7 +84,6 @@ function App() {
         canvas.toBlob(blob => {
           const file = new File([blob], 'image.png', { type: 'image/png' });
 
-          // Check if the browser supports the Web Share API
           if (navigator.canShare && navigator.canShare({ files: [file] })) {
             navigator.share({
               files: [file],
@@ -68,7 +93,6 @@ function App() {
               .then(() => console.log('Share successful'))
               .catch(error => console.error('Share failed', error));
           } else {
-            // For desktop or unsupported mobile browsers, download the image
             const link = document.createElement('a');
             link.href = canvas.toDataURL('image/png');
             link.download = 'image.png';
