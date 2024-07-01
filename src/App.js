@@ -49,7 +49,6 @@ function App() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // Access the API token from environment variables
         const apiKey = process.env.REACT_APP_IPINFO_API_KEY;
         const response = await axios.get(`https://ipinfo.io/json?token=${apiKey}`);
         setUserData(response.data);
