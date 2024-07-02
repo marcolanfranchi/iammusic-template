@@ -2,7 +2,7 @@ import { inject } from '@vercel/analytics';
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import React, { useState, useEffect } from 'react';
 import Draggable from 'react-draggable';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import { db } from './firebaseConfig';
 import html2canvas from 'html2canvas';
 import axios from 'axios';
@@ -60,12 +60,21 @@ function App() {
     fetchUserData();
   }, []);
 
+  const fetchMostRecentEntry = async () => {
+    const textsCollection = collection(db, 'texts');
+    const q = query(textsCollection, orderBy('timestamp', 'desc'), limit(1));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      return querySnapshot.docs[0].data();
+    }
+    return null;
+  };
+
   const handleSave = async () => {
     try {
       const os = navigator.platform;
       const { ip, country, region, city, loc } = userData;
-
-      await addDoc(collection(db, 'texts'), {
+      const newEntry = {
         timestamp: new Date(),
         text: inputText,
         ip,
@@ -74,7 +83,28 @@ function App() {
         city,
         location: loc,
         os,
-      });
+      };
+
+      const recentEntry = await fetchMostRecentEntry();
+
+      if (recentEntry) {
+        const recentTimestamp = recentEntry.timestamp.toDate();
+        const now = new Date();
+        const timeDiff = Math.abs(now - recentTimestamp);
+        const tenMinutes = 10 * 60 * 1000;
+
+        if (
+          timeDiff < tenMinutes &&
+          recentEntry.text.lower === newEntry.text.lower &&
+          recentEntry.ip === newEntry.ip &&
+          recentEntry.os === newEntry.os
+        ) {
+          console.log('Duplicate entry, not saving to the database');
+          return;
+        }
+      }
+
+      await addDoc(collection(db, 'texts'), newEntry);
       console.log('Text saved successfully');
 
       const imageContainer = document.getElementById('image-container');
