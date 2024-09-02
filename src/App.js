@@ -117,7 +117,7 @@ function App() {
             navigator.share({
               files: [file],
               title: 'I AM MUSIC TEMPLATE',
-              text: 'Check out this image!'
+              // text: 'Check out this image!'
             })
               .then(() => console.log('Share successful'))
               .catch(error => console.error('Share failed', error));
@@ -182,3 +182,4 @@ function App() {
 }
 
 export default App;
+
