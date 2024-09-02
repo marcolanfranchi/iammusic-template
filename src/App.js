@@ -6,6 +6,7 @@ import { collection, addDoc, query, orderBy, limit, getDocs } from 'firebase/fir
 import { db } from './firebaseConfig';
 import html2canvas from 'html2canvas';
 import axios from 'axios';
+import DOMPurify from 'dompurify';
 
 import './App.css';
 
@@ -72,11 +73,13 @@ function App() {
 
   const handleSave = async () => {
     try {
+      const sanitizedInputText = DOMPurify.sanitize(inputText);
+
       const os = navigator.platform;
       const { ip, country, region, city, loc } = userData;
       const newEntry = {
         timestamp: new Date(),
-        text: inputText,
+        text: sanitizedInputText,
         ip,
         country,
         region,
@@ -182,4 +185,3 @@ function App() {
 }
 
 export default App;
-

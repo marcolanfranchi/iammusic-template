@@ -11,6 +11,7 @@
     "@vercel/speed-insights": "^1.0.2",
     "axios": "^1.7.2",
     "cors": "^2.8.5",
+    "dompurify": "^3.1.6",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "firebase": "^10.12.2",
