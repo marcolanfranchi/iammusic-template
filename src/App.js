@@ -71,10 +71,45 @@ function App() {
     return null;
   };
 
-  const handleSave = async () => {
+  const handleSave = async (transparentBackground) => {
     try {
       const sanitizedInputText = DOMPurify.sanitize(inputText);
-
+  
+      // Generate and download the image first
+      const imageContainer = document.getElementById('image-container');
+      if (transparentBackground) {
+        // Hide background color to make the image transparent
+        imageContainer.style.backgroundColor = 'transparent';
+      }
+  
+      html2canvas(imageContainer, {
+        backgroundColor: transparentBackground ? null : 'white',
+      }).then(canvas => {
+        canvas.toBlob(blob => {
+          const file = new File([blob], 'image.png', { type: 'image/png' });
+  
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            navigator.share({
+              files: [file],
+              title: 'I AM MUSIC TEMPLATE',
+            })
+              .then(() => console.log('Share successful'))
+              .catch(error => console.error('Share failed', error));
+          } else {
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = 'image.png';
+            link.click();
+          }
+        }, 'image/png');
+  
+        if (transparentBackground) {
+          // Reset background color
+          imageContainer.style.backgroundColor = 'white';
+        }
+      });
+  
+      // Now handle the database logic
       const os = navigator.platform;
       const { ip, country, region, city, loc } = userData;
       const newEntry = {
@@ -87,56 +122,26 @@ function App() {
         location: loc,
         os,
       };
-
+  
       const recentEntry = await fetchMostRecentEntry();
-
       if (recentEntry) {
         const recentTimestamp = recentEntry.timestamp.toDate();
         const now = new Date();
         const timeDiff = Math.abs(now - recentTimestamp);
         const tenMinutes = 10 * 60 * 1000;
-
-        if (
-          timeDiff < tenMinutes &&
-          recentEntry.text.lower === newEntry.text.lower &&
-          recentEntry.ip === newEntry.ip &&
-          recentEntry.os === newEntry.os
-        ) {
+  
+        if (timeDiff < tenMinutes && recentEntry.text === newEntry.text && recentEntry.ip === newEntry.ip && recentEntry.os === newEntry.os) {
           console.log('Duplicate entry, not saving to the database');
           return;
         }
       }
-
+  
       await addDoc(collection(db, 'texts'), newEntry);
-      console.log('Text saved successfully');
-
-      const imageContainer = document.getElementById('image-container');
-
-      html2canvas(imageContainer).then(canvas => {
-        canvas.toBlob(blob => {
-          const file = new File([blob], 'image.png', { type: 'image/png' });
-
-          if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            navigator.share({
-              files: [file],
-              title: 'I AM MUSIC TEMPLATE',
-              // text: 'Check out this image!'
-            })
-              .then(() => console.log('Share successful'))
-              .catch(error => console.error('Share failed', error));
-          } else {
-            const link = document.createElement('a');
-            link.href = canvas.toDataURL('image/png');
-            link.download = 'image.png';
-            link.click();
-          }
-        }, 'image/png');
-      });
-
     } catch (e) {
       console.error('Error adding document: ', e);
     }
   };
+  
 
   return (
     <div className="App">
@@ -175,11 +180,38 @@ function App() {
           onChange={(e) => setInputText(e.target.value)}
           placeholder=""
         />
-        <button className="save-button" onClick={handleSave}>Save Image</button>
+        <div className="action-buttons">
+          <div className="checkbox-container">
+            <input
+              type="checkbox"
+              id="transparentBackgroundCheckbox"
+              style={{ marginRight: "8px" }}
+            />
+            <label htmlFor="transparentBackgroundCheckbox">
+              transparent background
+            </label>
+          </div>
+
+          <button className="save-button" onClick={() => handleSave(document.getElementById('transparentBackgroundCheckbox').checked)}>
+            Save Image
+          </button>
+        </div>
         <SpeedInsights />
       </div>
+
+
+
       <p className="bottom-text">you can move the bold text around</p>
       <p className="bottom-text">if it still looks bad, some words just work better than others</p>
+
+      <iframe
+      className="soundcloud-player"
+      scrolling="no"
+      frameBorder="no"
+      allow="autoplay"
+      src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1915814093&color=%23514d46&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"
+      ></iframe>
+
     </div>
   );
 }
