@@ -204,13 +204,13 @@ function App() {
       <p className="bottom-text">you can move the bold text around</p>
       <p className="bottom-text">if it still looks bad, some words just work better than others</p>
 
-      <iframe
+      {/* <iframe
       className="soundcloud-player"
       scrolling="no"
       frameBorder="no"
       allow="autoplay"
       src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1915814093&color=%23514d46&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"
-      ></iframe>
+      ></iframe> */}
 
     </div>
   );
