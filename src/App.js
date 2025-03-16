@@ -162,7 +162,7 @@ function App() {
         >
           {inputText.toUpperCase()}
         </p>
-        <Draggable>
+        <Draggable> 
           <p
             id="text-element"
             className="main-text"
