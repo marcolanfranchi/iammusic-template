@@ -78,7 +78,7 @@ function App() {
 
       // Use different endpoints for development and production
       const apiUrl = process.env.NODE_ENV === 'development' 
-        ? 'http://localhost:8000/api/save-text'  // Local FastAPI server
+        ? 'http://localhost:3000/api/save-text'  // Local FastAPI server
         : '/api/save-text';  // Vercel API route
 
       const response = await axios.post(apiUrl, entryData, {
