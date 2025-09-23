@@ -8,13 +8,13 @@
     "@testing-library/user-event": "^13.5.0",
     "@vercel/analytics": "^1.1.1",
     "@vercel/blob": "^0.23.3",
+    "@vercel/node": "^3.0.0",
     "@vercel/speed-insights": "^1.0.2",
     "axios": "^1.7.2",
     "cors": "^2.8.5",
     "dompurify": "^3.1.6",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "firebase": "^10.12.2",
     "html2canvas": "^1.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -27,7 +27,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "dev": "concurrently \"npm start\" \"npm run api\"",
+    "api": "cd api && python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000"
   },
   "eslintConfig": {
     "extends": [
@@ -46,5 +48,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }
