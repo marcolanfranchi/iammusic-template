@@ -2,8 +2,6 @@ import { inject } from '@vercel/analytics';
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import React, { useState, useEffect } from 'react';
 import Draggable from 'react-draggable';
-import { collection, addDoc, query, orderBy, limit, getDocs } from 'firebase/firestore';
-import { db } from './firebaseConfig';
 import html2canvas from 'html2canvas';
 import axios from 'axios';
 import DOMPurify from 'dompurify';
@@ -61,33 +59,65 @@ function App() {
     fetchUserData();
   }, []);
 
-  const fetchMostRecentEntry = async () => {
-    const textsCollection = collection(db, 'texts');
-    const q = query(textsCollection, orderBy('timestamp', 'desc'), limit(1));
-    const querySnapshot = await getDocs(q);
-    if (!querySnapshot.empty) {
-      return querySnapshot.docs[0].data();
+  const saveToDatabase = async () => {
+    try {
+      const sanitizedInputText = DOMPurify.sanitize(inputText);
+      
+      const os = navigator.platform;
+      const { ip, country, region, city, loc } = userData;
+      
+      const entryData = {
+        text: sanitizedInputText,
+        ip,
+        country,
+        region,
+        city,
+        location: loc,
+        os,
+      };
+
+      // Use different endpoints for development and production
+      const apiUrl = process.env.NODE_ENV === 'development' 
+        ? 'http://localhost:8000/api/save-text'  // Local FastAPI server
+        : '/api/save-text';  // Vercel API route
+
+      const response = await axios.post(apiUrl, entryData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        timeout: 10000, // 10 second timeout
+      });
+            
+    } catch (error) {
+      console.error('Error saving to database: ', error);
+      
+      if (error.response?.status === 429) {
+        console.log('⚠ Rate limit reached');
+      } else if (error.response?.status === 400) {
+        console.log('⚠ Invalid input');
+      } else {
+        console.log('⚠ Save failed');
+      }
+      
+      setTimeout(() => console.log(''), 3000);
     }
-    return null;
   };
 
   const handleSave = async (transparentBackground) => {
     try {
-      const sanitizedInputText = DOMPurify.sanitize(inputText);
-  
       // Generate and download the image first
       const imageContainer = document.getElementById('image-container');
       if (transparentBackground) {
         // Hide background color to make the image transparent
         imageContainer.style.backgroundColor = 'transparent';
       }
-  
+
       html2canvas(imageContainer, {
         backgroundColor: transparentBackground ? null : 'white',
       }).then(canvas => {
         canvas.toBlob(blob => {
           const file = new File([blob], 'image.png', { type: 'image/png' });
-  
+
           if (navigator.canShare && navigator.canShare({ files: [file] })) {
             navigator.share({
               files: [file],
@@ -102,46 +132,20 @@ function App() {
             link.click();
           }
         }, 'image/png');
-  
+
         if (transparentBackground) {
           // Reset background color
           imageContainer.style.backgroundColor = 'white';
         }
       });
-  
-      // Now handle the database logic
-      const os = navigator.platform;
-      const { ip, country, region, city, loc } = userData;
-      const newEntry = {
-        timestamp: new Date(),
-        text: sanitizedInputText,
-        ip,
-        country,
-        region,
-        city,
-        location: loc,
-        os,
-      };
-  
-      const recentEntry = await fetchMostRecentEntry();
-      if (recentEntry) {
-        const recentTimestamp = recentEntry.timestamp.toDate();
-        const now = new Date();
-        const timeDiff = Math.abs(now - recentTimestamp);
-        const tenMinutes = 10 * 60 * 1000;
-  
-        if (timeDiff < tenMinutes && recentEntry.text === newEntry.text && recentEntry.ip === newEntry.ip && recentEntry.os === newEntry.os) {
-          console.log('Duplicate entry, not saving to the database');
-          return;
-        }
-      }
-  
-      await addDoc(collection(db, 'texts'), newEntry);
+
+      // Save to database via secure API
+      await saveToDatabase();
+
     } catch (e) {
-      console.error('Error adding document: ', e);
+      console.error('Error handling save: ', e);
     }
   };
-  
 
   return (
     <div className="App">
@@ -192,29 +196,20 @@ function App() {
             </label>
           </div>
 
-          <button className="save-button" onClick={() => handleSave(document.getElementById('transparentBackgroundCheckbox').checked)}>
+          <button 
+            className="save-button" 
+            onClick={() => handleSave(document.getElementById('transparentBackgroundCheckbox').checked)}
+          >
             Save Image
           </button>
         </div>
         <SpeedInsights />
       </div>
 
-
-
       <p className="bottom-text">you can move the bold text around</p>
       <p className="bottom-text">if it still looks bad, some words just work better than others</p>
-
-      {/* <iframe
-      className="soundcloud-player"
-      scrolling="no"
-      frameBorder="no"
-      allow="autoplay"
-      src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1915814093&color=%23514d46&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"
-      ></iframe> */}
-
     </div>
   );
 }
 
 export default App;
-
